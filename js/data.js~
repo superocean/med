@@ -1,0 +1,17 @@
+function Person(firstname, lastname, email, password, mobile, address, address2, zipcode, town, country) {
+    this.FirstName = firstname;
+    this.LastName = lastname;
+    this.Email = email;
+    this.Password = password;
+    this.Mobile = mobile;
+    this.Address = address;
+    this.Address2 = address2;
+    this.Zipcode = zipcode;
+    this.Town = town;
+    this.Country = country;
+}
+
+function Team(teamname, person) {
+    this.TeamName = teamname;
+    this.Admin = person;
+}

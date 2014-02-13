@@ -1,0 +1,61 @@
+<h3>Registrere administrator</h3>
+<table border="0">
+    <tr>
+        <td>Fornavn:</td>
+        <td>
+            <input type="text" name="adminfirstName" id="adminfirstName" size="30" /></td>
+    </tr>
+    <tr>
+        <td>Etternavn:</td>
+        <td>
+            <input type="text" name="adminlastName" id="adminlastName" size="30" /></td>
+    </tr>
+    <tr>
+        <td>E-post:</td>
+        <td>
+            <input type="text" name="adminemail" id="adminemail" size="30" /></td>
+    </tr>
+    <tr>
+        <td>Passord:</td>
+        <td>
+            <input type="password" name="adminpassword" id="adminpassword" size="30" /></td>
+    </tr>
+    <tr>
+        <td>Mobilnr:</td>
+        <td>
+            <input type="text" name="adminmobilePhone" id="adminmobilePhone" size="30" /></td>
+    </tr>
+    <tr>
+        <td>Adresse:</td>
+        <td>
+            <input type="text" name="adminaddress1" id="adminaddress1" size="30" /></td>
+    </tr>
+    <tr>
+        <td>Adresse2:</td>
+        <td>
+            <input type="text" name="adminaddress2" id="adminaddress2" size="30" /></td>
+    </tr>
+    <tr>
+        <td>Postnr:</td>
+        <td>
+            <input type="text" name="adminzipCode" id="adminzipCode" size="30" /></td>
+    </tr>
+    <tr>
+        <td>Poststed:</td>
+        <td>
+            <input type="text" name="admincity" id="admincity" size="30" /></td>
+    </tr>
+    <tr>
+        <td>Land:</td>
+        <td>
+            <select name="admincountryRef" id="admincountryRef">
+                <option value="NO">Danmark</option>
+                <option value="FI">Finland</option>
+                <option value="NO" selected>Norge</option>
+                <option value="SE">Sverige</option>
+            </select>
+        </td>
+    </tr>
+</table>
+<input type="hidden" id="hiddenTeamname" />
+<button name="toRegisterStep3" onclick="javascript:register_step3()">Neste</button>

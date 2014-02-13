@@ -1,0 +1,177 @@
+<div id="wrapper_viewmessage">
+    <div class="viewmessage_left">
+        <p><a href="#" id="inbox" class="linkAcctive">Inbox</a></p>
+        <p><a href="#" id="sentmessage">Sent</a></p>
+        <p><a href="#">Trash</a></p>
+    </div>
+    <div class="viewmessage_right">
+        <div id="content_message"></div>
+        <div id="listmessages_show">
+            <table>
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>From</th>
+                        <th>Subject</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="messagesLoad">
+                </tbody>
+            </table>
+            <div class="button_bottom" style="float: left; width: 95%">
+                <div style="float: left">
+                    <span class="myButton">Delete</span>
+                    <span class="myButton">Forward</span>
+                </div>
+                <div style="float: right">
+                    <span id="previousmessages" class="myButton">&lt;</span>
+                    &nbsp;&nbsp;
+            <span id="nextmessages" class="myButton">&gt;</span>
+                </div>
+            </div>
+        </div>
+        <div id="sentmessagediv" style="display: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <th>From</th>
+                        <th>Subject</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="sentmessagebody">
+                </tbody>
+            </table>
+            <div class="button_bottom" style="float: left; width: 95%">
+                <div style="float: left">
+                    <span class="myButton">Delete</span>
+                </div>
+                <div style="float: right">
+                    <span id="previousSent" class="myButton">&lt;</span>
+                    &nbsp;&nbsp;
+                    <span id="nextSent" class="myButton">&gt;</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        clearMessageCookie();
+        clearSentMessageCookie();
+        loadAllMessages();
+        bindData(getMessages(20, 1));
+
+        $("#nextmessages").click(function () {
+            var m = nextMessagesClick(20);
+            if (m.length != 0) {
+                bindData(m);
+            }
+        });
+        $("#previousmessages").click(function () {
+            var m = previousMessagesClick(20);
+            if (m.length != 0) {
+                bindData(m);
+            }
+        });
+        $("#nextSent").click(function () {
+            var m = nextSentMessagesClick(20);
+            if (m.length != 0) {
+                bindSentData(m);
+            }
+        });
+        $("#previousSent").click(function () {
+            var m = previousSentMessagesClick(20);
+            if (m.length != 0) {
+                bindSentData(m);
+            }
+        });
+        $("#inbox").click(function (e) {
+            e.preventDefault();
+            clearMessageCookie();
+            loadAllMessages();
+            bindData(getMessages(20, 1));
+        })
+        $(document).on("click", "#replybutton", function (e) {
+            e.stopImmediatePropagation()
+            loadNewMessage();
+        });
+        $("#sentmessage").click(function (e) {
+            e.preventDefault();
+            clearSentMessageCookie();
+            loadAllSentMessages();
+            bindSentData(getSentMessages(20, 1));
+        });
+    });
+
+    function bindData(messages) {
+        $("#listmessages_show").show();
+        $("#content_message").hide();
+        $("#sentmessagediv").hide();
+        var str = "";
+        for (var i = 0; i < messages.length; i++) {
+            str += '<tr style="font-weight:' + ((messages[i].read == "false") ? "bold" : "normal") + '"><td style="width: 10%"><input type="checkbox" /></td><td style="width: 30%">' + messages[i].fromName + '</td><td style="width: 40%"><a href="#" onclick="viewDetailMessage(' + messages[i].messageId + ');return false;">' + messages[i].subject + '</a></td><td style="width: 20%">' + convertToDateTime(messages[i].timeSent) + '</td></tr>';
+        }
+        $('#messagesLoad').html(str);
+    }
+    function bindSentData(messages) {
+        $("#listmessages_show").hide();
+        $("#content_message").hide();
+        $("#sentmessagediv").show();
+        var str = "";
+        for (var i = 0; i < messages.length; i++) {
+            str += '<tr style="font-weight:' + ((messages[i].read == "false") ? "bold" : "normal") + '"><td style="width: 10%"><input type="checkbox" /></td><td style="width: 30%">' + messages[i].fromName + '</td><td style="width: 40%"><a href="#" onclick="viewDetailMessageSent(' + messages[i].messageId + ');return false;">' + messages[i].subject + '</a></td><td style="width: 20%">' + convertToDateTime(messages[i].timeSent) + '</td></tr>';
+        }
+        $('#sentmessagebody').html(str);
+    }
+    //view detail message
+    function viewDetailMessage(id) {
+        $("#content_message").show();
+        $("#listmessages_show").hide();
+        $("#sentmessagediv").hide();
+        $("#content_message").html("please wait...");
+        var message;
+        $.ajax({
+            url: "/mo/data/controller?module=user&action=message&messageId=" + id + "",
+            dataType: "json",
+            type: "Get",
+            async: false,
+            cache: false,
+            success: function (result) {
+                if (result[0].response == "message") {
+                    message = result[1];
+                }
+            }
+        });
+        $.cookie("frommessageName", message.fromName);
+        $.cookie("tomessageName", message.toName);
+        $.cookie("tomessageId", message.toId);
+        $.cookie("subjectmessage", message.subject);
+        $.cookie("contentmessage", message.message);
+        $.cookie("datemessage", convertToDateTime(message.timeSent));
+        $("#content_message").html("<p class='pmessagedetail'>Subject: " + message.subject + "</p><p class='pmessagedetail'>From: " + message.fromName + "</p><p class='pmessagedetail'>Date: " + convertToDateTime(message.timeSent) + "</p><p class='pmessagedetailcontent'>" + message.message + "</p><p style='margin-top:30px;'><span class='myButton' id='replybutton'>Reply</span></p>");
+    }
+    //view detail message sent
+    function viewDetailMessageSent(id) {
+        $("#content_message").show();
+        $("#listmessages_show").hide();
+        $("#sentmessagediv").hide();
+        $("#content_message").html("please wait...");
+        var message;
+        $.ajax({
+            url: "/mo/data/controller?module=user&action=sentmessage&messageId=" + id + "",
+            dataType: "json",
+            type: "Get",
+            async: false,
+            success: function (result) {
+                if (result[0].response == "message") {
+                    message = result[1];
+                }
+            }
+        });
+        $("#content_message").html("<p class='pmessagedetail'>Subject: " + message.subject + "</p><p class='pmessagedetail'>To: " + message.toName + "</p><p class='pmessagedetail'>Date: " + convertToDateTime(message.timeSent) + "</p><p class='pmessagedetailcontent'>" + message.message + "</p><p style='margin-top:30px;'></p>");
+    }
+</script>

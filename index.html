@@ -1,0 +1,132 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="/css/style.css" type="text/css" rel="stylesheet" />
+    <link rel="Stylesheet" type="text/css" href="/css/fonts.css" />
+    <script src="/js/jquery-1.9.0.min.js"></script>
+    <script src="/js/jquery.cookie.js"></script>
+    <script src="/js/data.js"></script>
+    <script src="/js/index.js"></script>
+</head>
+<body>
+
+    <div class="wrapper">
+        <div class="container">
+
+            <div class="top">
+                <a href="/">
+                    <img alt=" " src="/images/logo.png" /></a>
+            </div>
+
+            <div class="content">
+
+                <div id="left_submenu">
+
+                    <div class="caption_submenu">
+                        Login
+                    </div>
+                    <div class="clear"></div>
+                    <form method="post" id="formlogin" action="/blank.html" target="loginTarget">
+                        <div class="loginbox_bg">
+                            <div class="loginbox_space"></div>
+                            <input type="text" onclick="highlight(this);" value="login/email" name="username" id="login-username" class="loginbox_login" /><div class="loginbox_space"></div>
+                            <input type="password" onclick="highlight(this);" value="password" name="password" id="login-password" class="loginbox_password" />
+                        </div>
+                        <div class="loginbox_link">
+                            <input type="submit" id="submitlogin" class="loginbox_loggin" value="" />
+                            <!--<span class="loginbox_loggin"></span>-->
+                            <div class="forgottenpassword"><a href="#"></a></div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="left_content">
+
+                    <div id="box_01">
+                        <div class="caption_01"><span class="left"></span></div>
+                        <div class="box_01">
+                            <div id="box1_content" class="margin_01">
+                                <h2>Velkommen til medlemonline.no</h2>
+                                Dette blir en fin og flott tjeneste!
+                            </div>
+                            <div class="bottom_box1_content"></div>
+                        </div>
+                        <div class="space_20"></div>
+                    </div>
+
+                    <div class="box_content" id="box_02">
+                        <div class="top_box2"></div>
+                        <div class="margin_01">
+                            <div class="content_index_left">
+                                Register your team for free today!<br />
+                                <br />
+                                <input value="Team name" title="Team name" type="text" class="input_focus_blur input_content_left_index" />
+                                <input value="Your first name" title="Your first name" type="text" class="input_focus_blur input_content_left_index" />
+                                <input value="Your last name" title="Your last name" type="text" class="input_focus_blur input_content_left_index" />
+                                <input value="Your email address" title="Your email address" type="text" class="input_focus_blur input_content_left_index" />
+                                <input type="radio" name="radiosex" checked="checked" value="Male" />
+                                Male &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="radiosex" value="Female" />
+                                Female<br />
+                                <div class="register_now_div">
+                                    <span class="register_now" onclick="doRegister()"><a href="#"></a></span>
+                                </div>
+                            </div>
+
+                            <div class="content_index_right">
+                                Lei av brev, lapper og e-poster fra oppmann, lærer, brannsjef, sekretær i buekorpset, kor, korps, idrettslag m.m  som legger seg i haugen sammen med alle andre?<br>
+                                Mangler du folk til kveldsvakten i morgen? Må du sende en hastemelding eller innkalling til alle i styret ditt?<br>
+                                <br />
+                                Kommuniser raskt og effektivt! Få oversikt over dine dokumenter, avtaler og gjøremål!
+                                Lei av brev, lapper og e-poster fra oppmann, lærer, brannsjef, sekretær i buekorpset, kor, korps, idrettslag m.m  som legger seg i haugen sammen med alle andre?<br>
+                                Mangler du folk til kveldsvakten i morgen? Må du sende en hastemelding eller innkalling til alle i styret ditt?<br>
+                                <br />
+                                Kommuniser raskt og effektivt! Få oversikt over dine dokumenter, avtaler og gjøremål!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <iframe src="/blank.html" id="loginTarget" name="loginTarget" style="display: none"></iframe>
+    <script type="text/javascript">
+        $(function () {
+            $("#submitlogin").click(function (e) {
+                doLogin();
+                //e.preventDefault();
+            });
+
+            //if ($.cookie("isLogout") != "1") {
+            //    if ($.cookie("JSESSIONID")) {
+            //        window.location.href = "/mo/?lang=" + getCurrentLanguage();
+            //    }
+            //}
+            //else {
+            //    deleteLogincookie();
+            //    $.removeCookie("isLogout");
+            //}
+
+            RegisterEnterLogin();
+        });
+        function RegisterEnterLogin() {
+            var username = $("#login-username");
+            var password = $("#login-password");
+            var code = null;
+            username.keypress(function (e) {
+                code = (e.keyCode ? e.keyCode : e.which);
+                if (code == 13) {
+                    doLogin();
+                }
+            });
+            password.keypress(function (e) {
+                code = (e.keyCode ? e.keyCode : e.which);
+                if (code == 13) {
+                    doLogin();
+                }
+            });
+        }
+    </script>
+</body>
+</html>

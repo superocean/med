@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Medlemonline.no</title>
+    <link href="/css/style.css" type="text/css" rel="stylesheet" />
+    <link rel="Stylesheet" type="text/css" href="/css/fonts.css" />
+    <script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+    <link type="text/css" href="/js/jqueryUI/jquery-ui-1.9.2.custom.css" rel="stylesheet" />
+    <script type="text/javascript" src="/js/jquery-ui-1.10.3.js"></script>
+    <script type="text/javascript" src="/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/js/data.js"></script>
+    <script type="text/javascript" src="/js/index.js"></script>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+
+            <div class="top">
+                <a href="/">
+                    <img src="/images/logo.png" alt=" " /></a>
+            </div>
+
+            <div class="content">
+
+                <div id="submenu">
+                    <div id="left_submenu"></div>
+                    <div class="left_advert">
+                        <img src="/images/adsense_200x200_en.png" alt=" " />
+                        <div class="space_submenu"></div>
+                    </div>
+                </div>
+                <div class="left_content">
+                    <div id="tabs" style="float: left;">
+                        <ul>
+                            <li><a href="#tab1">Messages</a></li>
+                            <li><a href="#tab2">Tab2</a></li>
+                            <li><a href="#tab3">Tab3</a></li>
+                            <li><a href="#tab4">Tab4</a></li>
+                        </ul>
+                        <div id="tab1">
+                            <div class="heading_title_top">
+                                <!--                        <div id="messageTitle">Message center</div>-->
+                                <div class="button_heading_wrapper">
+                                    <span class="myButton" id="newMessage">New message</span>
+                                    <span class="myButton" id="newSms">New SMS</span>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <div id="infonotice"></div>
+                            <div class="box_content" id="box_02">
+                                <div class="top_box2"></div>
+                                <div id="dynamicContent"></div>
+                            </div>
+                        </div>
+                        <div id="tab2">
+                            <div class="box_content">&nbsp;</div>
+                        </div>
+                        <div id="tab3">
+                            <div class="box_content">&nbsp;</div>
+                        </div>
+                        <div id="tab4">
+                            <div class="box_content">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="advert">
+                    <img src="/images/adsense.jpg" alt=" " />
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $("#tabs").tabs();
+            if ($.cookie("JSESSIONID") == null) {
+                window.location.href = "/";
+            }
+            loadLeftMenu();
+            loadViewMessage();
+            $("#newMessage").click(function () {
+                clearMessageCookie();
+                loadNewMessage();
+            });
+            $("#newSms").click(function () {
+                loadNewSms();
+            });
+        });
+    </script>
+</body>
+</html>

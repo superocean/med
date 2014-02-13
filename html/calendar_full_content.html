@@ -1,0 +1,108 @@
+<script type='text/javascript' src='/media/fullcalendar.min.js'></script>
+<script type='text/javascript'>
+
+	$(document).ready(function() {
+	
+		var date = new Date();
+		var d = date.getDate();
+		var m = date.getMonth();
+		var y = date.getFullYear();
+		
+		$('#calendar').fullCalendar({
+			header: {left:'prev,next,today', center: 'title', right: 'month,agendaWeek,agendaDay'},		
+			editable: false,
+			disableDragging: false,
+			disableResizing: false,
+			axisFormat: 'HH(:mm)',
+			timeFormat: 'HH:mm{ - HH:mm}',
+			firstDay: 1,
+			minTime: 7,
+//			maxTime: 24,
+			allDayText: 'Heldag',
+			titleFormat: {month: 'MMMM yyyy',week: 'd MMM[ yyyy]{ '-'d[ MMM] yyyy ', day: 'dddd, d MMM yyyy'},
+			dayNames: ['Søndag','Mandag','Tirsdag','Onsdag','Torsdag','Fredag','Lørdag'],
+			dayNamesShort: ['Søn','Man','Tir','Ons','Tor','Fre','Lør'],
+			monthNames: ['Januar','Februar','Mars','April','Mai','Juni','Juli','August','September','Oktober','November','Desember'],
+			monthNamesShort: ['Jan','Feb','Mar','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Des'],
+			columnFormat: {month: 'ddd',week:'ddd d.M',day:'dddd d.M'},
+			buttonText: {
+			        prev: '&lt;',
+			        next: '&gt;',
+			        prevYear: ' &lt;&lt; ',
+			        nextYear: ' &gt;&gt; ',
+			        today: 'I dag',
+			        month: 'M&aring;ned',
+			        week: 'Uke',
+			        day: 'Dag'},
+ 
+			defaultView: 'agendaWeek',
+
+			events: [
+				{
+					title: 'Test1',
+					start: new Date(y, m, 1)
+				},
+				{
+					title: 'Test2',
+					start: new Date(y, m, d-5),
+					end: new Date(y, m, d-2)
+				},
+				{
+					id: 999,
+					title: '123123123',
+					start: new Date(y, m, d-3, 16, 0),
+					allDay: false
+				},
+				{
+					title: 'Møte',
+					start: new Date(y, m, d+1, 19, 0),
+					end: new Date(y, m, d+1, 22, 30),
+					allDay: false
+				}
+			]
+		});
+		
+	});
+
+</script>
+<style type='text/css'>
+
+	#calendar {
+		width: 600px;
+		margin: 0 auto;
+		}
+
+</style>
+
+
+      	<div class="caption_04">
+            <span class="left" id="tabs_title">Kalender</span>
+            <div style="margin-top: 4px;">
+            </div>
+        </div>
+            
+            
+        <div class="box_04">
+            <div class="margin_04">
+                <div id="tabs">
+                    <div id="tabs_1" style="display: block;">
+
+                        <h3>Kalender</span></h3>
+                <div class="space_10"></div>
+        
+        <div class="box_05"><div class="margin_04">
+	<div id='calendar'></div>
+            <div class="clear"></div>
+
+            
+        
+        </div><img src="images/box_05_end.gif" alt=" " /> 
+	</div></div>
+            <div class="space_6"></div><img src="images/box_04_end.gif" alt=" " />
+	</div>
+    
+
+    
+    </div>
+  </div>
+

@@ -1,0 +1,87 @@
+<div id="wrapper_newmessage">
+    <table>
+        <tr>
+            <td style="width: 10%">To:
+            </td>
+            <td style="width: 60%">
+                <input id="tonames" type="text" />
+            </td>
+            <td style="width: 30%">&nbsp;</td>
+        </tr>
+    </table>
+
+    <div class="newmessagediv">
+        <textarea id="textNewMessage" cols="85" rows="6"></textarea>
+    </div>
+    <div class="button_bottom">
+        <span class="myButton" id="sendsms">Send</span>
+        <span class="myButton">Cancel</span>
+    </div>
+</div>
+<script type="text/javascript">
+    function split(val) {
+        return val.split(/,\s*/);
+    }
+    function extractLast(term) {
+        return split(term).pop();
+    }
+    $(document).ready(function () {
+        var contacts = GetContact();
+        var fullnames = new Array();
+        var fullnameAndMemberIds = new Array();
+        for (var i = 0; i < contacts.length; i++) {
+            //var fullname = contacts[i].memberFirstName + " " + contacts[i].memberLastName;
+            var fullname = contacts[i].name;
+            fullnames.push(fullname);
+            fullnameAndMemberIds.push({ fullname: fullname, memberId: contacts[i].id })
+        }
+        $('#textNewMessage').on("keyup", (function () {
+            var text = $(this).val();
+            var chars = text.length;
+            if (chars> 160) {
+                $(this).val(text.substring(0, 160));
+            }
+        }));
+
+        //send message to
+        $("#tonames")
+                  .bind("keydown", function (event) {
+                      if (event.keyCode === $.ui.keyCode.TAB &&
+                          $(this).data("autocomplete").menu.active) {
+                          event.preventDefault();
+                      }
+                  })
+                  .autocomplete({
+                      minLength: 0,
+                      autoFocus: true,
+                      source: function (request, response) {
+                          response($.ui.autocomplete.filter(
+                            fullnames, extractLast(request.term)));
+                      },
+                      focus: function () {
+                          return false;
+                      },
+                      select: function (event, ui) {
+                          var terms = split(this.value);
+                          terms.pop();
+                          terms.push(ui.item.value);
+                          terms.push("");
+                          this.value = terms.join(", ");
+                          return false;
+                      }
+                  });
+        //Send message click
+        $("#sendmessage").click(function () {
+            var tonames = $("#tonames").val().split(',');
+            var toMemberIds = [];
+            for (var i = 0; i < tonames.length; i++) {
+                for (var j = 0; j < fullnameAndMemberIds.length; j++) {
+                    if ($.trim(tonames[i]) == fullnameAndMemberIds[j].fullname) {
+                        toMemberIds.push({ fullname: fullnameAndMemberIds[j].fullname, memberId: fullnameAndMemberIds[j].memberId });
+                        break;
+                    }
+                }
+            }
+        });
+    });
+</script>

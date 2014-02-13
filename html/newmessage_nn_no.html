@@ -1,0 +1,191 @@
+<div id="wrapper_newmessage">
+    
+    <table>
+        <tr>
+            <td style="width: 10%">From:
+            </td>
+            <td id="fromnametd" style="width: 60%">
+               <input type="hidden" id="fromname" />
+            </td>
+            <td style="width: 30%">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 10%">To:
+            </td>
+            <td style="width: 60%">
+                <input id="tonames" type="text" />
+            </td>
+            <td style="width: 30%">&nbsp;</td>
+        </tr>
+        <tr>
+            <td style="width: 10%">Subject:
+            </td>
+            <td style="width: 60%">
+                <input id="subject" type="text" />
+            </td>
+            <td style="width: 30%">
+                <!--Send as SMS?&nbsp;&nbsp;
+                <select id="sendsmsddl">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                </select>-->
+            </td>
+        </tr>
+    </table>
+
+    <div class="newmessagediv">
+        <textarea id="textNewMessage" cols="85" rows="20"></textarea>
+    </div>
+    <div class="button_bottom">
+        <span class="myButton" id="sendmessage">Send</span>
+        <span class="myButton">Cancel</span>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function split(val) {
+        return val.split(/,\s*/);
+    }
+    function extractLast(term) {
+        return split(term).pop();
+    }
+    function LoadReplyData() {
+        var toname = $.cookie("frommessageName");
+        var fromname = $.cookie("tomessageName");
+        var fromid = $.cookie("tomessageId");
+        var subject = $.cookie("subjectmessage");
+        var content = $.cookie("contentmessage");
+        var datemessage = $.cookie("datemessage");
+        if (toname && subject && content && datemessage) {
+            var strmessage = "Subject: " + subject + "<br />From: " + toname + "<br />Date: " + datemessage + "<br /><br />";
+            subject = "Re: " + subject;
+            content = "<br /><br />- - - - - Original message - - - - -<br />" + strmessage + content;
+            content = content.replace(new RegExp("<br />", "g"), "\n");
+            $("#tonames").val(toname);
+            $("#fromnametd").append("<input readonly type='text' value='" + fromname + "'/>");
+            $("#fromname").val(fromid);
+            $("#subject").val(subject);
+            $("#textNewMessage").val(content);
+        }
+
+    }
+    $(document).ready(function () {
+        if ($.cookie("subjectmessage")==null) {
+            loadFromName();
+        }
+        else
+        {
+            LoadReplyData();
+        }
+        
+        var contacts = GetContact();
+        var fullnames = new Array();
+        var fullnameAndMemberIds = new Array();
+        for (var i = 0; i < contacts.length; i++) {
+            //var fullname = contacts[i].memberFirstName + " " + contacts[i].memberLastName;
+            var fullname = contacts[i].name;
+            fullnames.push(fullname);
+            fullnameAndMemberIds.push({ fullname: fullname, memberId: contacts[i].id })
+        }
+        //$('#textNewMessage').on("keyup", (function () {
+        //    var text = $(this).val();
+        //    var chars = text.length;
+        //    if (chars> 160) {
+        //        $("#sendsmsddl").attr("disabled", true);
+        //        $("#sendsmsddl").val("0");
+        //        if ($.cookie("maxlengthcheck") == null) {
+        //            alert("The number of characters exceeds 160");
+        //            $.cookie("maxlengthcheck", "1");
+        //        }
+
+        //    }
+        //    else {
+        //        $("#sendsmsddl").attr("disabled", false);
+        //        //$("#sendsmsddl").val("1");
+        //        $.cookie("maxlengthcheck", null);
+        //    }
+        //}));
+
+        //send message to
+        $("#tonames")
+                  .bind("keydown", function (event) {
+                      if (event.keyCode === $.ui.keyCode.TAB &&
+                          $(this).data("autocomplete").menu.active) {
+                          event.preventDefault();
+                      }
+                  })
+                  .autocomplete({
+                      minLength: 0,
+                      autoFocus: true,
+                      source: function (request, response) {
+                          response($.ui.autocomplete.filter(
+                            fullnames, extractLast(request.term)));
+                      },
+                      focus: function () {
+                          return false;
+                      },
+                      select: function (event, ui) {
+                          var terms = split(this.value);
+                          terms.pop();
+                          terms.push(ui.item.value);
+                          terms.push("");
+                          this.value = terms.join(", ");
+                          return false;
+                      }
+                  });
+        //Send message click
+        $("#sendmessage").click(function () {
+            var tonames = $("#tonames").val().split(',');
+            var toMemberIds = [];
+            for (var i = 0; i < tonames.length; i++) {
+                for (var j = 0; j < fullnameAndMemberIds.length; j++) {
+                    if ($.trim(tonames[i]) == fullnameAndMemberIds[j].fullname) {
+                        toMemberIds.push({ fullname: fullnameAndMemberIds[j].fullname, memberId: fullnameAndMemberIds[j].memberId });
+                        break;
+                    }
+                }
+            }
+            var subject = $("#subject").val();
+            var message = $("#textNewMessage").val();
+            var fromid = $("#fromname").val();
+            for (var i = 0; i < toMemberIds.length; i++) {
+                $.ajax({
+                    url: "/mo/data/controller?module=user&action=sendmessage",
+                    type: "Post",
+                    dataType: "json",
+                    async: false,
+                    data: {fromMemberId:fromid, memberId: toMemberIds[i].memberId, subject: subject, message: message },
+                    success: function (result) {
+                        var stResult = result[0].response == "messageSent" ? "success" : "fail";
+                        showMessageInfo("<div id='messagesent" + i + "'>Send message to " + toMemberIds[i].fullname + " " + stResult + "</div>");
+                        setTimeout('hideMessageInfo("messagesent' + i + '")', '2000');
+                    }
+                });
+            }
+            loadViewMessage();
+        });
+    });
+
+    function loadFromName() {
+        $.ajax({
+            url: "/mo/data/controller?module=user&action=membershipstatus",
+            dataType: "json",
+            type: "get",
+            success: function (result) {
+                if (result[0].response == "membershipStatus") {
+                    var html = "<select id='fromname' style='width:94%'>";
+                    html += "<option value='-1'>";
+                    html += "--Select from--";
+                    html += "</option>";
+                    for (var i = 1; i < result.length; i++) {
+                        html += "<option value='" + result[i].memberId + "'>";
+                        html += result[i].memberName + "@" + result[i].teamName;
+                        html += "</option>";
+                    }
+                    html += "</select>";
+                    $("#fromnametd").html(html);
+                }
+            }
+        });
+    }
+</script>
